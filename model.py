@@ -31,9 +31,8 @@ class ParkingSpot(db.Model):
 
     # Ensure that spot_number is unique within each parking lot
     __table_args__ = (db.UniqueConstraint('lot_id', 'spot_number', name='_lot_spot_uc'),)
-    # This relationship defines an active reservation for a spot.
-    # Updated primaryjoin to explicitly join on spot_id and null leaving_timestamp
     reservations = db.relationship('Reservation', backref='spot', lazy=True) 
+    # This relationship defines an active reservation for a spot.
     active_reservation = db.relationship('Reservation', backref='active_spot_link', uselist=False,
                                   primaryjoin="and_(ParkingSpot.id == Reservation.spot_id, Reservation.leaving_timestamp == None)")
 
