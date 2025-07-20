@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Reservation Details{% endblock %}
+
+{% block content %}
+<h2>Reservation Details</h2>
+
+<p class="text-center mb-4">
+  <a href="{{ url_for('view_spots', lot_id=reservation.spot.lot.id) }}" class="btn btn-outline-secondary btn-sm">
+    ← Back to Spots
+  </a>
+</p>
+
+{% if reservation %}
+<div class="border p-4 rounded shadow-sm mx-auto" style="max-width: 600px;">
+  <div class="mb-2"><strong>Parking Lot ID:</strong> {{ id }}</div>
+  <div class="mb-2"><strong>Parking Lot Location:</strong> {{ parking_lot_name }}</div>
+  <div class="mb-2"><strong>Spot Number:</strong> {{ spot_number }}</div>
+  <div class="mb-2"><strong>Occupied By (Full Name):</strong> {{ user_full_name }}</div>
+  <div class="mb-2"><strong>Parking Timestamp (IST):</strong> {{ parking_timestamp_ist.strftime('%Y-%m-%d %H:%M:%S') }}</div>
+  <div class="mb-2"><strong>Vehicle Number:</strong> {{ vehicle_number }}</div>
+</div>
+{% else %}
+<p class="text-muted text-center">No reservation details found.</p>
+{% endif %}
+{% endblock %}

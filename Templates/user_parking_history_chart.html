@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Your Parking History Summary{% endblock %}
+
+{% block content %}
+<h2>{{ user.username }}'s Parking History Summary</h2>
+
+<p class="text-center mb-4">
+  <a href="{{ url_for('user_dashboard') }}" class="btn btn-outline-secondary btn-sm">
+    ← Back to Dashboard
+  </a>
+</p>
+
+{% if chart_url %}
+<div class="chart-container">
+  <img src="data:image/png;base64,{{ chart_url }}" alt="Your Parking History Chart" class="img-fluid">
+</div>
+{% else %}
+<p class="text-muted text-center">No parking history data available to display charts.</p>
+{% endif %}
+{% endblock %}

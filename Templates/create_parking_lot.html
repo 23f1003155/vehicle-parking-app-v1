@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Create Parking Lot{% endblock %}
+
+{% block content %}
+<h2>Create Parking Lot</h2>
+
+<form method="POST" class="mx-auto" style="max-width: 600px;">
+  <div class="mb-3">
+    <label for="prime_location_name" class="form-label">Location Name</label>
+    <input type="text" class="form-control" id="prime_location_name" name="prime_location_name" required>
+  </div>
+  <div class="mb-3">
+    <label for="price" class="form-label">Price (per hour)</label>
+    <input type="number" step="0.01" class="form-control" id="price" name="price" required>
+  </div>
+  <div class="mb-3">
+    <label for="address" class="form-label">Address</label>
+    <textarea class="form-control" id="address" name="address" rows="2" required></textarea>
+  </div>
+  <div class="mb-3">
+    <label for="pin_code" class="form-label">Pin Code</label>
+    <input type="text" class="form-control" id="pin_code" name="pin_code" required>
+  </div>
+  <div class="mb-3">
+    <label for="maximum_number_of_spots" class="form-label">Maximum Number of Spots</label>
+    <input type="number" class="form-control" id="maximum_number_of_spots" name="maximum_number_of_spots" required>
+  </div>
+  <div class="d-flex justify-content-between align-items-center">
+    <button type="submit" class="btn btn-success">Create</button>
+    <a href="{{ url_for('admin_dashboard', view='parking_lots') }}" class="btn btn-outline-secondary">Back</a>
+  </div>
+</form>
+{% endblock %}

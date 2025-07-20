@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}View Spots - Parking Lot {{ lot.prime_location_name }}{% endblock %}
+
+{% block content %}
+<h2>Parking Spots for {{ lot.prime_location_name }}</h2>
+
+<p class="text-center mb-4">
+  <a href="{{ url_for('admin_dashboard', view='parking_lots') }}" class="btn btn-outline-secondary btn-sm">
+    ← Back to Dashboard
+  </a>
+</p>
+
+<table class="table table-striped table-hover">
+  <thead class="table-light">
+    <tr>
+      <th>Spot Number</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for spot_info in spots_data %}
+    <tr>
+      <td>{{ spot_info.spot_number }}</td>
+      <td>
+        {% if spot_info.status == 'A' %}
+          <span class="badge bg-success">Available</span>
+        {% else %}
+          {% if spot_info.reservation_id %}
+            <a href="{{ url_for('view_reservation_details', reservation_id=spot_info.reservation_id) }}" class="btn btn-sm btn-outline-danger">Occupied</a>
+          {% else %}
+            <span class="badge bg-danger">Occupied</span>
+          {% endif %}
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

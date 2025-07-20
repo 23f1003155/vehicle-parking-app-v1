@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#">Admin Dashboard</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard', view='parking_lots') }}">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('create_parking_lot') }}">Create New Parking Lot</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard', view='users') }}">Register Users</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('admin_dashboard', view='summary') }}">Summary</a></li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Log Out</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Parking Lots Section -->
+{% if view == 'parking_lots' %}
+<h3>Parking Lots</h3>
+<table class="table table-hover table-striped">
+  <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Location</th>
+      <th>Price</th>
+      <th>Address</th>
+      <th>Pin Code</th>
+      <th>Max Spots</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for lot in parking_lots %}
+    <tr>
+      <td>{{ lot.id }}</td>
+      <td>{{ lot.prime_location_name }}</td>
+      <td>₹{{ "%.2f"|format(lot.price) }}</td>
+      <td>{{ lot.address }}</td>
+      <td>{{ lot.pin_code }}</td>
+      <td>{{ lot.maximum_number_of_spots }}</td>
+      <td class="d-flex flex-wrap align-items-center gap-1">
+           <a href="{{ url_for('edit_parking_lot', lot_id=lot.id) }}" class="btn btn-primary btn-sm">Edit</a>
+          <form method="POST" action="{{ url_for('delete_parking_lot', lot_id=lot.id) }}" class="m-0">
+          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+          </form>
+          <a href="{{ url_for('view_spots', lot_id=lot.id) }}" class="btn btn-info btn-sm">View Spots</a>
+      </td>
+
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<!-- Registered Users Section -->
+{% if view == 'users' %}
+<h3>Registered Users</h3>
+<table class="table table-hover table-bordered">
+  <thead class="table-light">
+    <tr>
+      <th>ID</th>
+      <th>Full Name</th>
+      <th>Address</th>
+      <th>Pin Code</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    <tr>
+      <td>{{ user.id }}</td>
+      <td>{{ user.full_name if user.full_name else 'N/A' }}</td>
+      <td>{{ user.address if user.address else 'N/A' }}</td>
+      <td>{{ user.pin if user.pin else 'N/A' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<!-- Summary Section -->
+{% if view == 'summary' %}
+<h3>Parking Lot Occupancy Summary</h3>
+{% if admin_chart_url %}
+<div class="chart-container">
+  <img src="data:image/png;base64,{{ admin_chart_url }}" alt="Parking Lot Occupancy Summary" class="img-fluid">
+</div>
+{% else %}
+<p>No data available for Parking Lot Occupancy Summary.</p>
+{% endif %}
+
+<h3 class="mt-4">Earnings from Parking Lot</h3>
+{% if earnings_chart_url %}
+<div class="chart-container">
+  <img src="data:image/png;base64,{{ earnings_chart_url }}" alt="Earnings from Parking Lot" class="img-fluid">
+</div>
+{% else %}
+<p>No data available for Earnings from Parking Lot.</p>
+{% endif %}
+
+<h3>All Past Reservations</h3>
+{% if all_past_reservations %}
+<table class="table table-hover table-striped">
+  <thead class="table-light">
+    <tr>
+      <th>User</th>
+      <th>Parking Lot</th>
+      <th>Spot Number</th>
+      <th>Parking In (IST)</th>
+      <th>Parking Out (IST)</th>
+      <th>Cost</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for res in all_past_reservations %}
+    <tr>
+      <td>{{ res.user.full_name if res.user and res.user.full_name else 'N/A' }}</td>
+      <td>{{ res.spot.lot.prime_location_name if res.spot and res.spot.lot else 'N/A' }}</td>
+      <td>{{ res.spot.spot_number if res.spot else 'N/A' }}</td>
+      <td>{{ res.parking_timestamp_ist.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+      <td>{{ res.leaving_timestamp_ist.strftime('%Y-%m-%d %H:%M:%S') if res.leaving_timestamp_ist else 'N/A' }}</td>
+      <td>₹{{ "%.2f"|format(res.total_cost) if res.total_cost is not none else 'N/A' }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>No past reservations.</p>
+{% endif %}
+{% endif %}
+{% endblock %}
